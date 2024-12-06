@@ -13,7 +13,6 @@ def ospf_packets_filter(pcap_path):
     
 def process_packets(packets):
 
-    is_found_anomaly = False
     packet_data = []
     for packet in packets:
         fields = packet.split('\t')
@@ -29,9 +28,8 @@ def process_packets(packets):
     for i in range(1, len(packet_data)):
         first_frame_number, first_source_ip, first_linkstate_id, first_advertising_router, first_sequence_number, first_checksum = packet_data[i-1]
         second_frame_number, second_source_ip, second_linkstate_id, second_advertising_router, second_sequence_number, second_checksum = packet_data[i]
-       
+        print(first_sequence_number)
         if first_advertising_router == second_advertising_router and abs(int(first_sequence_number, 16) - int(second_sequence_number, 16)) == 1:
-            is_found_anomaly = True
             print(f"[+] Found potential disguised LSA attack between frames {first_frame_number} and {second_frame_number}.")
 
             fightback_frame = None
@@ -67,10 +65,8 @@ def process_packets(packets):
                 else:
                     print("[-] No fight-back frame found. Attack not fully confirmed.")
         if first_advertising_router != first_linkstate_id:
-            is_found_anomaly = True
             print(f"[+] Found potential Mismatched Fields Attack between frames - Adversiting Router {first_advertising_router} does not match to Link State ID {first_linkstate_id}.")
-    if not is_found_anomaly:
-        print("[-] Not found suspicious OSPF anomalies.")
+       
 def main():
 
     parser = argparse.ArgumentParser(description="Detect disguised LSA attack in a pcap file.")
