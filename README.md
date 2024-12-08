@@ -5,7 +5,9 @@ After reading Gabi Nakibly, Alex Kirshon, and Dima Gonikman's research on OSPF a
 The OSPF Attacks Finder is a command line tool that detects OSPF attacks in a given pcap file.  The tool is designed for security researchers and network administrators to check if there is routing poisoning in their network. The tool finds the potential for the following attacks:
         
 Disguised LSA
+
 Mismatched field attacks 
+
 Remote False Adjacency 
 
 It is done by Tshark filtering and Python parsing. The tool is built in a framework format and allows for easy addition of new analyses.
