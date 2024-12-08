@@ -8,7 +8,7 @@ The OSPF Attacks Finder is a command line tool that detects OSPF attacks in a gi
         - Remote False Adjacency 
 It is done by Tshark filtering and Python parsing. The tool is built in a framework format and allows for easy addition of new analyses.
 
-### Usge
+### Usage
 CMD:
 ```cmd
 python ospf_attacks_finder.py -p <your_pcap>
