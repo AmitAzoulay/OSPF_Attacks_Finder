@@ -47,7 +47,7 @@ Example Output:
                  Checksum: 0x417b
 ```
 
-### Add Your Anlysis
+### Add Your Analysis
 1. Add your analysis class that will inherit from AnomalyDetector.
 2. Implement the init and detect function to your class (The analysis commited in detect function).
 3. In get_packets function of AnomalyDetectionFramework add your class (There you also send the output and fields to the tshark query).
