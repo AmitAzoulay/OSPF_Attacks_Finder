@@ -161,7 +161,7 @@ class RemoteFalseAdjacencyDetector(AnomalyDetector):
                 seq2 = int(packet2["ospf.db.dd_sequence"])
 
                 # Search for fake DBD packets from the phantom router
-                if seq1 == seq2:
+                if seq1 != seq2:
                     anomalies_found = True
                     print(f"[!] Sudden jump in sequence number - Potentially Remote False Adjacency attack detected.")
                     self._print_packet_details(packet1)
