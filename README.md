@@ -2,8 +2,13 @@
 
 After reading Gabi Nakibly, Alex Kirshon, and Dima Gonikman's research on OSPF attacks, I realized the power, impact, and relevance of L3 attacks, in particular related to OSPF. OSPF is the most used routing protocol in small and large networks today. 
 
-The OSPF Attacks Finder is a command line tool that detects OSPF attacks in a given pcap file.  The tool is designed for security researchers and network administrators to check if there is routing poisoning in their network. The tool finds disguised LSA and Mismatched field attacks by Tshark filtering and Python parsing.
+The OSPF Attacks Finder is a command line tool that detects OSPF attacks in a given pcap file.  The tool is designed for security researchers and network administrators to check if there is routing poisoning in their network. The tool finds the potential for the following attacks:
+        - Disguised LSA 
+        - Mismatched field attacks 
+        - Remote False Adjacency 
+It is done by Tshark filtering and Python parsing. The tool is built in a framework format and allows for easy addition of new analyses.
 
+### Usge
 CMD:
 ```cmd
 python ospf_attacks_finder.py -p <your_pcap>
@@ -33,7 +38,12 @@ Example Output:
                  Advertising Router: 192.168.75.11
                  Sequence Number: 0x80000056
                  Checksum: 0x417b
-
-[+] Found potential disguised LSA attack between frames 104 and 105.
-[-] No fight-back frame found. Attack not fully confirmed.
 ```
+
+### Add Your Anlysis
+1. Add your analysis class that will inherit from AnomalyDetector.
+2. Implement the init and detect function to your class (The analysis commited in detect function).
+3. In get_packets function of AnomalyDetectionFramework add your class (There you also send the output and fields to the tshark query).
+4. In main, use the register_detector method of 'framwork' instance and pass to it your analysis class.
+5. Enjoy!
+
