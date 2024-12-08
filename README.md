@@ -16,29 +16,33 @@ python ospf_attacks_finder.py -p <your_pcap>
 
 Example Output:
 ```cmd
-[+] Found potential disguised LSA attack between frames 88 and 89.
-
-[!] Disguised LSA OSPF Attack Detected.
+[+] Disguised LSA detected between frames 88 and 89.
         Attacker IPs: ('192.168.118.25', '192.168.84.90')
         Victim IP: 192.168.75.11
+        Injected router: 192.168.75.201
 
-        Triggered OSPF Frame: 88
+        Triggered Packet: 
+                Frame: 88
                  Sender: 192.168.118.25
                  Advertising Router: 192.168.75.11
                  Sequence Number: 0x80000055
                  Checksum: 0x2cc8
 
-        Disguised OSPF Frame: 89
+        Disguised Packet
+                 Frame: 89
                  Sender: 192.168.84.90
                  Advertising Router: 192.168.75.11
                  Sequence Number: 0x80000056
                  Checksum: 0x417b
 
-        OSPF Fight-back Mechanism in Frame: 101
+        Fight-back Packet:
+                 Frame: 90
+                 Sender: 192.168.75.11
                  Advertising Router: 192.168.75.11
                  Sequence Number: 0x80000056
                  Checksum: 0x417b
 ```
+*Note* - The sender ip in the fight-back packet not must be the ip of the victim
 
 ### Add Your Anlysis
 1. Add your analysis class that will inherit from AnomalyDetector.

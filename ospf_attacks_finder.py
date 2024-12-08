@@ -78,24 +78,23 @@ class DisguisedLSADetector(AnomalyDetector):
                 and disguised_packet["ospf.advrouter"] != disguised_packet["ip.src"]
             ):
                 
-                anomalies_found = True
-                victim_ip = disguised_packet["ospf.advrouter"]
-                attacker_ips = (triggered_packet["ip.src"], disguised_packet["ip.src"])
-
-                print(f"[+] Disguised LSA detected between frames {triggered_packet['frame.number']} and {disguised_packet['frame.number']}.")
-                print(f"    Attacker IPs: {attacker_ips}")
-                print(f"    Victim IP: {victim_ip}")
-
-                # Print details of the triggered and disguised packets
-                self._print_packet_details("Triggered Packet", triggered_packet)
-                self._print_packet_details("Disguised Packet", disguised_packet)
-
                 # Check for fight-back packet as a response to the triggered packet
                 fightback_packet = self._find_fightback_packet(packets[i + 1:], disguised_packet)
+                
                 if fightback_packet:
+                    anomalies_found = True
+                    victim_ip = disguised_packet["ospf.advrouter"]
+                    attacker_ips = (triggered_packet["ip.src"], disguised_packet["ip.src"])
+                    print(f"[+] Disguised LSA detected between frames {triggered_packet['frame.number']} and {disguised_packet['frame.number']}.")
+                    print(f"    Attacker IPs: {attacker_ips}")
+                    print(f"    Victim IP: {victim_ip}")
+                    print(f"    Injected router: {fightback_packet['ip.dst']}")
+
+                    # Print details of the desired packets
+                    self._print_packet_details("Triggered Packet", triggered_packet)
+                    self._print_packet_details("Disguised Packet", disguised_packet)
                     self._print_packet_details("Fight-back Packet", fightback_packet)
-                else:
-                    print("    [-] No fight-back packet found. Attack not fully mitigated.")
+
         return anomalies_found
 
     def _find_fightback_packet(self, subsequent_packets: List[Dict[str, str]], reference_packet: Dict[str, str]) -> Dict[str, str]:
@@ -115,7 +114,8 @@ class DisguisedLSADetector(AnomalyDetector):
             if (
                 packet["ospf.advrouter"] == reference_packet["ospf.advrouter"]
                 and packet["ospf.lsa.seqnum"] == reference_packet["ospf.lsa.seqnum"]
-                and packet["ospf.checksum"] == reference_packet["ospf.checksum"]
+                and packet["ospf.lsa.chksum"] == reference_packet["ospf.lsa.chksum"]
+                and packet["ospf.advrouter"] == packet["ip.src"]
             ):
                 return packet
         return None
@@ -133,7 +133,7 @@ class DisguisedLSADetector(AnomalyDetector):
         print(f"        Sender: {packet['ip.src']}")
         print(f"        Advertising Router: {packet['ospf.advrouter']}")
         print(f"        Sequence Number: {packet['ospf.lsa.seqnum']}")
-        print(f"        Checksum: {packet['ospf.checksum']}")
+        print(f"        Checksum: {packet['ospf.lsa.chksum']}")
 
 class RemoteFalseAdjacencyDetector(AnomalyDetector):
     """
@@ -254,7 +254,7 @@ class AnomalyDetectionFramework:
             return TsharkRunner.run_tshark(
                 self.pcap_path,
                 "ospf.lsa.seqnum",
-                ["frame.number", "ip.src", "ospf.lsa.id", "ospf.advrouter", "ospf.lsa.seqnum", "ospf.checksum"]
+                ["frame.number", "ip.src", "ip.dst", "ospf.lsa.id", "ospf.advrouter", "ospf.lsa.seqnum", "ospf.lsa.chksum"]
             )
         elif isinstance(detector, RemoteFalseAdjacencyDetector):
             return TsharkRunner.run_tshark(
