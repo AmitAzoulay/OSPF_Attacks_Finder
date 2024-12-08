@@ -3,9 +3,11 @@
 After reading Gabi Nakibly, Alex Kirshon, and Dima Gonikman's research on OSPF attacks, I realized the power, impact, and relevance of L3 attacks, in particular related to OSPF. OSPF is the most used routing protocol in small and large networks today. 
 
 The OSPF Attacks Finder is a command line tool that detects OSPF attacks in a given pcap file.  The tool is designed for security researchers and network administrators to check if there is routing poisoning in their network. The tool finds the potential for the following attacks:
-        - Disguised LSA 
-        - Mismatched field attacks 
-        - Remote False Adjacency 
+        
+Disguised LSA
+Mismatched field attacks 
+Remote False Adjacency 
+
 It is done by Tshark filtering and Python parsing. The tool is built in a framework format and allows for easy addition of new analyses.
 
 ### Usage
@@ -42,7 +44,6 @@ Example Output:
                  Sequence Number: 0x80000056
                  Checksum: 0x417b
 ```
-*Note* - The sender ip in the fight-back packet not must be the ip of the victim
 
 ### Add Your Anlysis
 1. Add your analysis class that will inherit from AnomalyDetector.
