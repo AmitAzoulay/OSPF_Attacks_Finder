@@ -50,7 +50,7 @@ Example Output:
 ### Add Your Analysis
 1. Add your analysis class that will inherit from AnomalyDetector.
 2. Implement the init and detect function to your class (The analysis commited in detect function).
-3. In get_packets function of AnomalyDetectionFramework add your class (There you also send the output and fields to the tshark query).
+3. In get_packets function of AnomalyDetectionFramework add your class (There you also send the relevant filter and fields to the tshark query).
 4. In main, use the register_detector method of 'framwork' instance and pass to it your analysis class.
 5. Enjoy!
 
